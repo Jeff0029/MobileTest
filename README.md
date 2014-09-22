@@ -1,6 +1,6 @@
 ----------------------------------------------
 
-_Applicant_
+_Jean-Francois Vienneau_
 =================
 
 These instructions are specifically very vague.  We must learn not only about your skills as a programmer, but also about your skills and knowledge as a developer.
