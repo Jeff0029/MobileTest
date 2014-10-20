@@ -10,5 +10,30 @@
 #define __ArcticTest__GameSetup__
 
 #include <stdio.h>
+#include "EnemyGenerator.h"
+#include "SlingShot.h"
+
+
+namespace ArcticTest
+{
+    
+    class GameSetup
+    {
+    public:
+        GameSetup();
+        virtual ~GameSetup();
+    private:
+        
+        TextureBank* textureBank;
+        EnemyGenerator* enemyGen;
+        SlingShot* slingshot;
+    };
+    
+}
+
+
+
+
+
 
 #endif /* defined(__ArcticTest__GameSetup__) */

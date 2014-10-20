@@ -1,5 +1,5 @@
 /** Automatically generated file. DO NOT MODIFY */
-package com.TestV3cpp;
+package com.ArcticTest;
 
 public final class BuildConfig {
     public final static boolean DEBUG = true;

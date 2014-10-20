@@ -2,6 +2,10 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "GameSetup.h"
+#include <iostream>
+namespace ArcticTest
+{
 
 class HelloWorld : public cocos2d::Layer
 {
@@ -12,11 +16,18 @@ public:
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();  
     
+    void update(float dt);
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
+    
+    //Tutorial used: https://www.youtube.com/watch?v=0oFy8Pf9g6Y
+    cocos2d::PhysicsWorld *physicWorld;
+    
+    void SetupPhysicWorld(cocos2d::PhysicsWorld *world){ physicWorld = world; };
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 };
 
+}
 #endif // __HELLOWORLD_SCENE_H__

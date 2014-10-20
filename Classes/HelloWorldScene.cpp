@@ -1,11 +1,16 @@
 #include "HelloWorldScene.h"
 
+namespace ArcticTest
+{
+    
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
 {
     // 'scene' is an autorelease object
-    auto scene = Scene::create();
+    auto scene = Scene::createWithPhysics();
+    
+    scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     
     // 'layer' is an autorelease object
     auto layer = HelloWorld::create();
@@ -46,13 +51,14 @@ bool HelloWorld::init()
     // create menu, it's an autorelease object
     auto menu = Menu::create(closeItem, NULL);
     menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
+    //this->addChild(menu, 1);
 
     /////////////////////////////
     // 3. add your codes below...
 
     // add a label shows "Hello World"
     // create and initialize a label
+    
     
     auto label = LabelTTF::create("Hello World", "Arial", 24);
     
@@ -61,7 +67,8 @@ bool HelloWorld::init()
                             origin.y + visibleSize.height - label->getContentSize().height));
 
     // add the label as a child to this layer
-    this->addChild(label, 1);
+    //this->addChild(label, 1);
+
 
     // add "HelloWorld" splash screen"
     auto sprite = Sprite::create("HelloWorld.png");
@@ -70,12 +77,26 @@ bool HelloWorld::init()
     sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
 
     // add the sprite as a child to this layer
-    this->addChild(sprite, 0);
-    
+    //this->addChild(sprite, 0);
+    this->scheduleUpdate();
+
     return true;
 }
 
-
+    void HelloWorld::update(float dt)
+    {
+        auto hello = (Director::getInstance()->getRunningScene());
+        GameSetup* setup;
+        
+        if (hello != NULL && setup == NULL)
+        {
+            //Scene has loaded
+            setup = new GameSetup();
+            
+            this->unscheduleUpdate();
+        }
+    }
+    
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
@@ -89,3 +110,6 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     exit(0);
 #endif
 }
+
+}
+

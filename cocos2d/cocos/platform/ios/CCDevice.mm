@@ -128,6 +128,10 @@ static CCAccelerometerDispatcher* s_pAccelerometerDispatcher;
             
         case UIInterfaceOrientationPortrait:
             break;
+            
+        case UIInterfaceOrientationUnknown:
+#pragma warning ("Screen Orientation not found");
+            break;
     }
 
     cocos2d::EventAcceleration event(*_acceleration);

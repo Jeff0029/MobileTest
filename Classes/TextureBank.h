@@ -13,25 +13,22 @@
 
 namespace ArcticTest
 {
+    using namespace std;
     class TextureBank
     {
         
-
     public:
         
         TextureBank();
         virtual ~TextureBank();
         
-        TextureBank(TextureBank const&); // Prevent copy-constructor
-        TextureBank& operator=(TextureBank const&); // Prevent assignment
+        void RenameRetina(string* name);
         
-        static TextureBank& GetInstance();
         
-        cocos2d::Texture2D m_slingShotTexture;
-        cocos2d::Texture2D m_reticleTexture;
-        cocos2d::Texture2D m_projectileTexture;
-        cocos2d::Texture2D m_enemyTexture;
-
+        string slingShotTexture = "bottom.png";
+        string reticleTexture = "sling.png";
+        string projectileTexture = "projectile.png";
+        string enemyTexture = "pieces.png";
     };
 }
 

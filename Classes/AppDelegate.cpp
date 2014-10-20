@@ -1,6 +1,9 @@
 #include "AppDelegate.h"
 #include "HelloWorldScene.h"
 
+namespace ArcticTest
+{
+
 USING_NS_CC;
 
 AppDelegate::AppDelegate() {
@@ -10,7 +13,7 @@ AppDelegate::AppDelegate() {
 AppDelegate::~AppDelegate() 
 {
 }
-
+    
 bool AppDelegate::applicationDidFinishLaunching() {
     // initialize director
     auto director = Director::getInstance();
@@ -28,10 +31,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // create a scene. it's an autorelease object
     auto scene = HelloWorld::createScene();
-
+    scene->setTag(1);
     // run
     director->runWithScene(scene);
-
+    
     return true;
 }
 
@@ -49,4 +52,6 @@ void AppDelegate::applicationWillEnterForeground() {
 
     // if you use SimpleAudioEngine, it must resume here
     // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+}
+
 }

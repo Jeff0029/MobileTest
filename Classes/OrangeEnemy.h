@@ -9,6 +9,26 @@
 #ifndef __ArcticTest__OrangeEnemy__
 #define __ArcticTest__OrangeEnemy__
 
-#include <stdio.h>
+#include "Enemy.h"
+#include <iostream>
+
+namespace ArcticTest
+{
+    class OrangeEnemy : public Enemy
+    {
+        OrangeEnemy();
+        virtual ~OrangeEnemy();
+    protected:
+        virtual void Activate();
+    public:
+        static OrangeEnemy* Create(string spriteName);
+        virtual void update(float dt);
+        
+        Size screenSize;
+        
+        Action* MoveDownLeft;
+        Action* MoveDownRight;
+    };
+}
 
 #endif /* defined(__ArcticTest__OrangeEnemy__) */

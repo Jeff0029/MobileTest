@@ -12,20 +12,10 @@ namespace ArcticTest
 {
     TextureBank::TextureBank()
     {
-        if (cocos2d::Director::getInstance()->getOpenGLView()->isRetinaDisplay())
-        {
-            // Load retina graphics
-            
-            cocos2d::Image slingImage;
-            slingImage.initWithImageFile("bottom-hd.png");
-            m_slingShotTexture.initWithImage(&slingImage);
-        }
-        else
-        {
-            // Load standard graphics
-            
-        }
-        
+        RenameRetina(& slingShotTexture);
+        RenameRetina(& reticleTexture);
+        RenameRetina(& projectileTexture);
+        RenameRetina(& enemyTexture);
     }
     
     TextureBank::~TextureBank()
@@ -34,10 +24,9 @@ namespace ArcticTest
         
     }
     
-    TextureBank& TextureBank::GetInstance()
+    void TextureBank::RenameRetina(string* name)
     {
-        static TextureBank singleton;
-        return singleton;
+        if (cocos2d::Director::getInstance()->getOpenGLView()->isRetinaDisplay())
+            name->insert(name->find('.'), "-hd");
     }
-    
 }

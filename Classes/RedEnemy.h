@@ -9,6 +9,21 @@
 #ifndef __ArcticTest__RedEnemy__
 #define __ArcticTest__RedEnemy__
 
-#include <stdio.h>
+#include "Enemy.h"
+#include <iostream>
+#include "OrangeEnemy.h"
+
+namespace ArcticTest
+{
+    class RedEnemy : public Enemy, cocos2d::Node
+    {
+        RedEnemy();
+        virtual ~RedEnemy();
+    protected:
+        virtual void Activate();
+    public:
+        static RedEnemy* Create(string spriteName);
+    };
+}
 
 #endif /* defined(__ArcticTest__RedEnemy__) */
