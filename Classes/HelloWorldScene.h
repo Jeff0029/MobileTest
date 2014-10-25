@@ -1,9 +1,11 @@
 #ifndef __HELLOWORLD_SCENE_H__
 #define __HELLOWORLD_SCENE_H__
 
+#include <iostream>
+
 #include "cocos2d.h"
 #include "GameSetup.h"
-#include <iostream>
+
 namespace ArcticTest
 {
 

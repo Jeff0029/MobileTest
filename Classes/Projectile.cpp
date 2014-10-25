@@ -7,7 +7,6 @@
 //
 
 #include "Projectile.h"
-#include <iostream>
 
 namespace ArcticTest
 {
@@ -17,8 +16,15 @@ namespace ArcticTest
         
         auto projectilePhysic = PhysicsBody::createBox(projectileSprite->getContentSize());
         projectilePhysic->setEnable(false);
+        projectilePhysic->setCollisionBitmask(PROJECTILE_CONTACT_LAYER);
+        projectilePhysic->setContactTestBitmask(true);
         
+        collisionListner = EventListenerPhysicsContact::create();
+        collisionListner->onContactBegin = CC_CALLBACK_1(Projectile::OnContactBegin, this);
+        
+        projectileSprite->setUserData(this);
         projectileSprite->setPhysicsBody(projectilePhysic);
+        projectileSprite->getEventDispatcher()->addEventListenerWithFixedPriority(collisionListner, 1);
         
         projectileLayer->addChild(projectileSprite);
     }
@@ -45,6 +51,57 @@ namespace ArcticTest
         projectileSprite->cocos2d::Node::setPosition(position);
     }
     
+    bool Projectile::OnContactBegin(PhysicsContact &physicBodyTouched)
+    {
+        auto a = physicBodyTouched.getShapeA();
+        auto b = physicBodyTouched.getShapeB();
+        
+        // If any of the shapes is an enemy
+        if ((a->getCollisionBitmask() == ENEMY_CONTACT_LAYER) || (b->getCollisionBitmask() == ENEMY_CONTACT_LAYER ))
+        {
+            Enemy *enemy;
+            Projectile *projectile;
+            
+            if (a->getCollisionBitmask() == ENEMY_CONTACT_LAYER)
+            {
+                // a is the enemy
+                enemy = static_cast<Enemy *>(a->getBody()->getNode()->getUserData());
+                projectile = static_cast<Projectile *>(b->getBody()->getNode()->getUserData());
+            }
+            else
+            {
+                // b is the enemy
+                enemy = static_cast<Enemy *>(b->getBody()->getNode()->getUserData());
+                projectile = static_cast<Projectile *>(a->getBody()->getNode()->getUserData());
+            }
+            
+            MarkAsPoolable(projectile);
+            Enemy::MarkedAsPoolable(enemy);
+            
+        }
+        // If we collide with a wall
+        else if ((a->getBody()->getTag() == BORDER_PHYSICBODY_TAG) || (b->getBody()->getTag() == BORDER_PHYSICBODY_TAG))
+        {
+            Projectile *projectile;
+            if (a->getBody()->getTag() == BORDER_PHYSICBODY_TAG)
+                //b is the projectile
+                projectile = static_cast<Projectile *>(b->getBody()->getNode()->getUserData());
+            else
+                //a is the projectile
+                projectile = static_cast<Projectile *>(a->getBody()->getNode()->getUserData());
+            
+            cout << "Marked as poolabled because of Borders" << endl;
+            MarkAsPoolable(projectile);
+        }
+            
+        return true;
+    }
+    
+    void Projectile::Destroy()
+    {
+        projectileSprite->release();
+    }
+
     Vec2 Projectile::GetNormalizedDirection()
     {
         float x = sin(projectileSprite->getRotation() * 3.14/180);
@@ -52,5 +109,12 @@ namespace ArcticTest
         Vec2 direction = Vec2(x, y);
         direction.normalize();
         return direction;
+    }
+    
+    void Projectile::MarkAsPoolable(Projectile* projectile)
+    {
+        projectile->projectileSprite->setVisible(false);
+        projectile->isPoolable = true;
+        projectile->projectileSprite->getPhysicsBody()->setEnable(false);
     }
 }

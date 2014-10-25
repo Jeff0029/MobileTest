@@ -18,15 +18,12 @@ namespace ArcticTest
     
     GreenEnemy::~GreenEnemy()
     {
-        
-        
+        cout << "Green Enemy Destroyed" << endl;
     }
     
-    GreenEnemy* GreenEnemy::Create(string spriteName)
+    GreenEnemy* GreenEnemy::Create()
     {
-        GreenEnemy* greenEnemy = new GreenEnemy();
-        
-        return greenEnemy;
+        return new GreenEnemy();
     }
     
     void GreenEnemy::Activate()
@@ -35,8 +32,7 @@ namespace ArcticTest
         auto moveDown = MoveBy::create(timeToTravelScreenHeight, Vec2(0, -finalPos));
         this->moveDown = moveDown;
         
-        CallFunc *callSelectorAction = CallFunc::create(this, callfunc_selector(Enemy::ApplyPunishement) );
-        
-        enemySprite->runAction(Sequence::create(moveDown, callSelectorAction, NULL));
+        CallFunc *callPunishement = CallFunc::create(CC_CALLBACK_0(Enemy::ApplyPunishement, this));
+        enemySprite->runAction(Sequence::create(moveDown, callPunishement, NULL));
     }
 }

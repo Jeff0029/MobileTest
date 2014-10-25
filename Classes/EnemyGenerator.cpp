@@ -36,7 +36,10 @@ namespace ArcticTest
     {
         // Delete the content the pointers is pointing at.
         for (int i = 0; i < allEnemies.size(); i++)
-            delete &allEnemies.at(i);
+        {
+            if (allEnemies.at(i) != NULL)
+                delete &allEnemies.at(i);
+        }
         
         // Clear the pointers
         allEnemies.clear();
@@ -56,13 +59,13 @@ namespace ArcticTest
         switch (color)
         {
             case Enemy::green:
-                enemy = GreenEnemy::Create(textBank->enemyTexture);
+                enemy = GreenEnemy::Create();
                 break;
             case Enemy::orange:
-                enemy = OrangeEnemy::Create(textBank->enemyTexture);
+                enemy = OrangeEnemy::Create();
                 break;
             case Enemy::red:
-                enemy = RedEnemy::Create(textBank->enemyTexture);
+                enemy = RedEnemy::Create();
                 break;
             default:
                 break;
@@ -74,13 +77,11 @@ namespace ArcticTest
         enemy->shape = allShapeTypeChances[GetEnumKey(allShapeKeys, shapeTypeChance)];
         
         enemy->enemySprite = Sprite::create(textBank->enemyTexture);
-        
+        enemy->enemySprite->setTag(ENEMY_TAG);
+        enemy->enemySprite->setUserData(enemy);
         enemy->SetupEnemySpriteRect(enemy);
-        
         enemy->SetupCollisionShape(enemy);
-        
         enemy->SetStartingPos(enemy->enemySprite);
-        
         enemyLayer->addChild(enemy->enemySprite);
         
         enemy->Activate();
@@ -112,7 +113,8 @@ namespace ArcticTest
 
     float EnemyGenerator::randomPourcentageGenerator()
     {
-        return (rand()%100) / 100.0f;
+        srand(arc4random());
+        return (rand() % 100) / 100.0f;
     }
     
     template <typename T>

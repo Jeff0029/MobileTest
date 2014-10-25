@@ -12,16 +12,18 @@ namespace ArcticTest
 {
     Enemy::Enemy()
     {
-
+        
     }
     
     Enemy::~Enemy()
     {
-        
-        
+        cout << "Enemy destroyed!! " << endl;
     }
     
     void Enemy::Activate()
+    {}
+    
+    void Enemy::onExit()
     {
         
     }
@@ -75,12 +77,24 @@ namespace ArcticTest
         }
         
         CCASSERT(physicsBody != NULL, "Create \'physicsbody\' before continuing");
+        physicsBody->setCollisionBitmask(ENEMY_CONTACT_LAYER);
+        physicsBody->setContactTestBitmask(true);
         physicsBody->setDynamic(false);
         physicsBody->setGravityEnable(false);
     }
     
     void Enemy::ApplyPunishement()
     {
+        MarkedAsPoolable(this);
         cout << "Enemy reached the lower section of the screen" << endl;
+    }
+    
+    void Enemy::MarkedAsPoolable(Enemy* enemy)
+    {
+        enemy->enemySprite->getScheduler()->unscheduleAllForTarget(enemy->enemySprite);
+        enemy->enemySprite->getActionManager()->removeAllActionsFromTarget(enemy->enemySprite);
+        enemy->enemySprite->getPhysicsBody()->setEnable(false);
+        enemy->isPoolable = true;
+        enemy->enemySprite->setVisible(false);
     }
 }

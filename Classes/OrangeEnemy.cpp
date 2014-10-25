@@ -17,15 +17,12 @@ namespace ArcticTest
     
     OrangeEnemy::~OrangeEnemy()
     {
-        
-        
+        cout << "Orange Enemy Destroyed" << endl;
     }
     
-    OrangeEnemy* OrangeEnemy::Create(string spriteName)
+    OrangeEnemy* OrangeEnemy::Create()
     {
-        OrangeEnemy* orangeEnemy = new OrangeEnemy();
-        
-        return orangeEnemy;
+        return new OrangeEnemy();
     }
     
     void OrangeEnemy::Activate()
@@ -34,13 +31,14 @@ namespace ArcticTest
         MoveDownRight  = MoveBy::create(timeToTravelScreenHeight, Vec2(finalPos, -finalPos));
         MoveDownLeft  = MoveBy::create(timeToTravelScreenHeight, Vec2(-finalPos, -finalPos));
         
-        MoveDownRight->setTarget(enemySprite);
-        MoveDownRight->retain();
-        MoveDownRight->setTag(1);
         
-        MoveDownLeft->setTarget(enemySprite);
+        MoveDownLeft->setTag(MOVE_DOWN_ACTION_TAG);
         MoveDownLeft->retain();
-        MoveDownLeft->setTag(1);
+        MoveDownLeft->setTarget(enemySprite);
+        
+        MoveDownRight->setTag(MOVE_DOWN_ACTION_TAG);
+        MoveDownRight->retain();
+        MoveDownRight->setTarget(enemySprite);
         
         if (rand() & 1)
             enemySprite->runAction(MoveDownRight);
@@ -49,19 +47,17 @@ namespace ArcticTest
         
         // Check when it touches the screen
         Director::getInstance()->getScheduler()->schedule(schedule_selector(OrangeEnemy::update), this, 0, false);
-
     }
     
     void OrangeEnemy::update(float dt)
     {
-        if (enemySprite->getPosition().x > screenSize.width - enemySprite->getContentSize().width/2 && enemySprite->getActionByTag(1) == MoveDownRight)
+        if (enemySprite->getPosition().x > screenSize.width - enemySprite->getContentSize().width/2 && enemySprite->getActionByTag(MOVE_DOWN_ACTION_TAG) == MoveDownRight)
         {
             // TODO: use stopaction with proper cleanup
             enemySprite->stopAllActions();
             enemySprite->runAction(MoveDownLeft);
-            
         }
-        else if (enemySprite->getPosition().x < enemySprite->getContentSize().width/2 && enemySprite->getActionByTag(1) == MoveDownLeft)
+        else if (enemySprite->getPosition().x < enemySprite->getContentSize().width/2 && enemySprite->getActionByTag(MOVE_DOWN_ACTION_TAG) == MoveDownLeft)
         {
             // TODO: use stopaction with proper cleanup
             enemySprite->stopAllActions();
@@ -74,6 +70,5 @@ namespace ArcticTest
             enemySprite->stopAllActions();
             Director::getInstance()->getScheduler()->unschedule(schedule_selector(OrangeEnemy::update), this);
         }
-        
     }
 }

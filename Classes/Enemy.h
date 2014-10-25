@@ -12,7 +12,9 @@
 #include <stdio.h>
 #include <cocos2d.h>
 #include <iostream>
+
 #include "TextureBank.h"
+#include "Constants.h"
 
 namespace ArcticTest
 {
@@ -38,11 +40,13 @@ namespace ArcticTest
         virtual ~Enemy();
         
         virtual void Activate();
+        virtual void onExit();
         void SetStartingPos(Sprite* sprite);
         static float RandomScreenWidthPosition(float spriteWidth);
         void SetupEnemySpriteRect(Enemy* enemy);
         void SetupCollisionShape(Enemy* enemy);
         void ApplyPunishement();
+        static void MarkedAsPoolable(Enemy* enemy);
         
         // Amount of sprites in the spritesheat
         int enemySpriteAmount = 6;
@@ -54,6 +58,8 @@ namespace ArcticTest
         ShapeType shape;
         ColorType color;
         Sprite* enemySprite;
+        
+        bool isPoolable = false;
     };
 }
 

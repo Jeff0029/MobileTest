@@ -7,10 +7,13 @@
 
 #ifndef SLINGSHOT_H_
 #define SLINGSHOT_H_
+
+#include <iostream>
+
 #include "cocos2d.h"
 #include "TextureBank.h"
+#include "Constants.h"
 #include "Projectile.h"
-#include <iostream>
 
 namespace ArcticTest
 {
@@ -20,7 +23,7 @@ namespace ArcticTest
     public:
         SlingShot(TextureBank* textBank);
         virtual ~SlingShot();
-        void SetupSlingShot();
+        void SetupScreenBorder(Size sizeOffset);
         
     private:
         
@@ -45,10 +48,13 @@ namespace ArcticTest
         float reticleMovingSpeed = 10;
         
         // How much force the slingshot apply to the projectiles
-        float slingshotForce = 180000;
+        float slingshotForce = 160000;
         
-        string projectileName;
+        bool isFirstShotFired = false;
+        string projectileTextureName;
+        
         Projectile* projectileInSling;
+        //Vector<Projectile *> usedProjectiles;
     };
 
 } /* namespace ArcticTest */

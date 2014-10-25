@@ -9,20 +9,26 @@
 #ifndef __ArcticTest__RedEnemy__
 #define __ArcticTest__RedEnemy__
 
-#include "Enemy.h"
 #include <iostream>
+
+#include "Enemy.h"
 #include "OrangeEnemy.h"
 
 namespace ArcticTest
 {
-    class RedEnemy : public Enemy, cocos2d::Node
+    class RedEnemy : public OrangeEnemy
     {
         RedEnemy();
         virtual ~RedEnemy();
+        
     protected:
         virtual void Activate();
     public:
-        static RedEnemy* Create(string spriteName);
+        static RedEnemy* Create();
+    private:
+        void SwitchSide(float dt);
+        
+        float switchingIntervalTime = 3;
     };
 }
 

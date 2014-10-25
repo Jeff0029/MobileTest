@@ -9,8 +9,10 @@
 #ifndef __ArcticTest__Projectile__
 #define __ArcticTest__Projectile__
 
-#include <stdio.h>
 #include <cocos2d.h>
+
+#include <stdio.h>
+#include "Enemy.h"
 
 namespace ArcticTest
 {
@@ -25,10 +27,17 @@ namespace ArcticTest
         
         void LookAt(Vec2 target);
         void SetPos(Vec2 position);
+        bool OnContactBegin(PhysicsContact &physicBodyTouched);
+        void Destroy();
         
+        EventListenerPhysicsContact* collisionListner;
         Vec2 GetNormalizedDirection();
+        static void MarkAsPoolable(Projectile* projectile);
         
         Sprite* projectileSprite;
+        
+        // If the projectile is ready to be reused
+        bool isPoolable = false;
     };
 }
 

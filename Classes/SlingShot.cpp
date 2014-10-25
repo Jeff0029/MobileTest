@@ -19,7 +19,7 @@ namespace ArcticTest
         slingshotSprite = Sprite::create(textBank->slingShotTexture);
         reticleSprite = Sprite::create(textBank->reticleTexture);
         
-        projectileName = textBank->projectileTexture;
+        projectileTextureName = textBank->projectileTexture;
         
         auto slingLayer = SlingShot::create();
         this->slingLayer = slingLayer;
@@ -50,9 +50,34 @@ namespace ArcticTest
 		// TODO Auto-generated destructor stub
 	}
     
+    void SlingShot::SetupScreenBorder(Size sizeOffset)
+    {
+        Size visibleSize = Director::getInstance()->getVisibleSize();
+        Vec2 origin = Director::getInstance()->getVisibleOrigin();
+        
+        Size BorderSize = *new Size(visibleSize.width + (sizeOffset.width * 2), visibleSize.height + visibleSize.height);
+        auto screenBorder = PhysicsBody::createEdgeBox(BorderSize);
+        screenBorder->setTag(BORDER_PHYSICBODY_TAG);
+        screenBorder->setPositionOffset(Vec2(visibleSize.width/2, visibleSize.height/2));
+        screenBorder->setCollisionBitmask(BORDER_CONTACT_LAYER);
+        screenBorder->setContactTestBitmask(true);
+        
+        auto borderNode = Node::create();
+        borderNode->setPhysicsBody(screenBorder);
+        slingLayer->addChild(borderNode);
+    }
+        
     bool SlingShot::onTouchedStarted(Touch* touch, Event* event)
     {
-        projectileInSling = new Projectile(projectileName, slingLayer);
+        projectileInSling = new Projectile(projectileTextureName, slingLayer);
+        projectileInSling->SetPos(reticleSprite->getPosition());
+        if (!isFirstShotFired)
+        {
+            float maxDimension = MAX(projectileInSling->projectileSprite->getContentSize().height, projectileInSling->projectileSprite->getContentSize().width);
+            cout << maxDimension << endl;
+            SetupScreenBorder(Size(maxDimension, maxDimension));
+            isFirstShotFired = true;
+        }
         
         initialTouch = touch->getLocation();
         return true;
@@ -63,12 +88,18 @@ namespace ArcticTest
         projectileInSling->SetPos(reticleSprite->getPosition());
         projectileInSling->LookAt(reticleRestingPos);
         
+        if (initialTouch.y < touch->getLocation().y)
+            initialTouch.y = touch->getLocation().y;
+        
         // If we are within the movement circle
         if (initialTouch.distance(touch->getLocation()) < reticleMovementRadius)
             reticleSprite->setPosition(reticleRestingPos + (touch->getLocation() - initialTouch));
         // If we are outside the circle
         else
             reticleSprite->setPosition(initialTouch.lerp(touch->getLocation(), reticleMovementRadius / initialTouch.distance(touch->getLocation())) + (reticleRestingPos - initialTouch));
+        
+        //Clamp to only be able to shoot up
+        reticleSprite->setPosition(reticleSprite->getPosition().x ,clampf(reticleSprite->getPosition().y, 0, reticleRestingPos.y));
     }
     
     void SlingShot::onTouchedEnded(Touch* touch, Event* event)
@@ -83,6 +114,7 @@ namespace ArcticTest
     
     void SlingShot::ReleaseProjectile(float force, Vec2 direction)
     {
+        //usedProjectiles.pushBack(projectileInSling);
         PhysicsBody* ProjectileBody = projectileInSling->projectileSprite->getPhysicsBody();
         ProjectileBody->setEnable(true);
         ProjectileBody->applyImpulse(Vect(direction.x * force, direction.y * force));

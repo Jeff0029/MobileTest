@@ -9,8 +9,9 @@
 #ifndef __ArcticTest__GreenEnemy__
 #define __ArcticTest__GreenEnemy__
 
-#include "Enemy.h"
 #include <iostream>
+
+#include "Enemy.h"
 
 namespace ArcticTest
 {
@@ -25,7 +26,7 @@ namespace ArcticTest
     protected:
         virtual void Activate();
     public:
-        static GreenEnemy* Create(string spriteName);
+        static GreenEnemy* Create();
     };
 }
 

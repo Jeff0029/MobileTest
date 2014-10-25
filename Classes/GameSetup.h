@@ -10,6 +10,7 @@
 #define __ArcticTest__GameSetup__
 
 #include <stdio.h>
+
 #include "EnemyGenerator.h"
 #include "SlingShot.h"
 
