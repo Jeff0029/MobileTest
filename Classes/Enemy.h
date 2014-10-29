@@ -46,7 +46,7 @@ namespace ArcticTest
         void SetupEnemySpriteRect(Enemy* enemy);
         void SetupCollisionShape(Enemy* enemy);
         void ApplyPunishement();
-        static void MarkedAsPoolable(Enemy* enemy);
+        static void Destroy(Enemy* enemy);
         
         // Amount of sprites in the spritesheat
         int enemySpriteAmount = 6;
@@ -58,8 +58,6 @@ namespace ArcticTest
         ShapeType shape;
         ColorType color;
         Sprite* enemySprite;
-        
-        bool isPoolable = false;
     };
 }
 

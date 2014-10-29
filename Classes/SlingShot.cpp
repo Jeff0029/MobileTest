@@ -15,32 +15,31 @@ namespace ArcticTest
 	{
         Size visibleSize = Director::getInstance()->getVisibleSize();
         Vec2 origin = Director::getInstance()->getVisibleOrigin();
+        projectileTextureName = textBank->projectileTexture;
         
+        // Create Sprites
         slingshotSprite = Sprite::create(textBank->slingShotTexture);
         reticleSprite = Sprite::create(textBank->reticleTexture);
         
-        projectileTextureName = textBank->projectileTexture;
+        // position Sprites
+        slingshotSprite->setPosition(Vec2(visibleSize.width/2 + origin.x, slingshotSprite->getContentSize().height/2 + origin.y));
+        reticleSprite->setPosition(Vec2(visibleSize.width/2 + origin.x, slingshotSprite->getContentSize().height + origin.y));
+        reticleRestingPos = reticleSprite->getPosition();
         
+        // Create layer
         auto slingLayer = SlingShot::create();
         this->slingLayer = slingLayer;
         
-        slingshotSprite->setPosition(Vec2(visibleSize.width/2 + origin.x, slingshotSprite->getContentSize().height/2 + origin.y));
-        reticleSprite->setPosition(Vec2(visibleSize.width/2 + origin.x, slingshotSprite->getContentSize().height + origin.y));
-        
-        reticleRestingPos = reticleSprite->getPosition();
-        
+        // Setup slingShot Listner
         auto listner = EventListenerTouchOneByOne::create();
         listner->setSwallowTouches(true);
-        
         listner->onTouchBegan = CC_CALLBACK_2(SlingShot::onTouchedStarted, this);
         listner->onTouchMoved = CC_CALLBACK_2(SlingShot::onTouchedMoved, this);
         listner->onTouchEnded = CC_CALLBACK_2(SlingShot::onTouchedEnded, this);
-        
         _eventDispatcher->addEventListenerWithSceneGraphPriority(listner, reticleSprite);
         
         slingLayer->addChild(reticleSprite);
         slingLayer->addChild(slingshotSprite);
-        
         Director::getInstance()->getRunningScene()->addChild(slingLayer);
         
 	}
@@ -69,12 +68,24 @@ namespace ArcticTest
         
     bool SlingShot::onTouchedStarted(Touch* touch, Event* event)
     {
-        projectileInSling = new Projectile(projectileTextureName, slingLayer);
+        if (usedProjectiles.size() == 0)
+        {
+            projectileInSling = new Projectile(projectileTextureName, slingLayer);
+            projectileInSling->usedProjectiles = &usedProjectiles;
+        }
+        else
+        {
+            projectileInSling = usedProjectiles.front();
+            UnpoolProjectile(usedProjectiles.front());
+        }
+        
+        projectileInSling->projectileSprite->getPhysicsBody()->resetForces();
+        projectileInSling->projectileSprite->setRotation(0);
         projectileInSling->SetPos(reticleSprite->getPosition());
+        
         if (!isFirstShotFired)
         {
             float maxDimension = MAX(projectileInSling->projectileSprite->getContentSize().height, projectileInSling->projectileSprite->getContentSize().width);
-            cout << maxDimension << endl;
             SetupScreenBorder(Size(maxDimension, maxDimension));
             isFirstShotFired = true;
         }
@@ -114,10 +125,15 @@ namespace ArcticTest
     
     void SlingShot::ReleaseProjectile(float force, Vec2 direction)
     {
-        //usedProjectiles.pushBack(projectileInSling);
         PhysicsBody* ProjectileBody = projectileInSling->projectileSprite->getPhysicsBody();
         ProjectileBody->setEnable(true);
         ProjectileBody->applyImpulse(Vect(direction.x * force, direction.y * force));
+    }
+    
+    void SlingShot::UnpoolProjectile(Projectile* projectile)
+    {
+        projectile->projectileSprite->setVisible(true);
+        usedProjectiles.remove(projectile);
     }
 
 } /* namespace ArcticTest */

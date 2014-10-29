@@ -27,30 +27,19 @@ namespace ArcticTest
         
         // Spawn the first one
         GenerateEnemy();
-        Director::getInstance()->getScheduler()->schedule(schedule_selector(EnemyGenerator::GenerateEnemiesScheduler), this, 2, false);
+        Director::getInstance()->getScheduler()->schedule(schedule_selector(EnemyGenerator::GenerateEnemiesScheduler), this, generationRate, false);
         
-        Director::getInstance()->getScheduler()->schedule(schedule_selector(EnemyGenerator::SpeedUpGenerationScheduler), this, 2, false);
+        Director::getInstance()->getScheduler()->schedule(schedule_selector(EnemyGenerator::SpeedUpGenerationScheduler), this, SPEEDUP_INTERVAL_TIME, false);
     }
     
     EnemyGenerator::~EnemyGenerator()
     {
-        // Delete the content the pointers is pointing at.
-        for (int i = 0; i < allEnemies.size(); i++)
-        {
-            if (allEnemies.at(i) != NULL)
-                delete &allEnemies.at(i);
-        }
-        
-        // Clear the pointers
-        allEnemies.clear();
-        allEnemies.shrink_to_fit(); 
+
     }
     
     void EnemyGenerator::GenerateEnemy()
     {
         Enemy* enemy;
-
-        allEnemies.push_back(enemy);
         
         vector<float> allColorKeys = KeysInVector(allColorTypeChances);
         float colorTypeChance = randomPourcentageGenerator();
@@ -82,6 +71,7 @@ namespace ArcticTest
         enemy->SetupEnemySpriteRect(enemy);
         enemy->SetupCollisionShape(enemy);
         enemy->SetStartingPos(enemy->enemySprite);
+        
         enemyLayer->addChild(enemy->enemySprite);
         
         enemy->Activate();

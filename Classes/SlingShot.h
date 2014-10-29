@@ -32,6 +32,7 @@ namespace ArcticTest
         void onTouchedEnded(Touch * touch, Event * event);
         
         void ReleaseProjectile(float force, Vec2 direction);
+        void UnpoolProjectile(Projectile* projectile);
         
         Layer* slingLayer;
         
@@ -54,7 +55,7 @@ namespace ArcticTest
         string projectileTextureName;
         
         Projectile* projectileInSling;
-        //Vector<Projectile *> usedProjectiles;
+        list<Projectile *> usedProjectiles;
     };
 
 } /* namespace ArcticTest */

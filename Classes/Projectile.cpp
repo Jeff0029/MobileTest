@@ -76,7 +76,7 @@ namespace ArcticTest
             }
             
             MarkAsPoolable(projectile);
-            Enemy::MarkedAsPoolable(enemy);
+            Enemy::Destroy(enemy);
             
         }
         // If we collide with a wall
@@ -89,17 +89,11 @@ namespace ArcticTest
             else
                 //a is the projectile
                 projectile = static_cast<Projectile *>(a->getBody()->getNode()->getUserData());
-            
-            cout << "Marked as poolabled because of Borders" << endl;
+
             MarkAsPoolable(projectile);
         }
             
         return true;
-    }
-    
-    void Projectile::Destroy()
-    {
-        projectileSprite->release();
     }
 
     Vec2 Projectile::GetNormalizedDirection()
@@ -114,7 +108,12 @@ namespace ArcticTest
     void Projectile::MarkAsPoolable(Projectile* projectile)
     {
         projectile->projectileSprite->setVisible(false);
-        projectile->isPoolable = true;
-        projectile->projectileSprite->getPhysicsBody()->setEnable(false);
+        
+        PhysicsBody* ProjectileBody = projectile->projectileSprite->getPhysicsBody();
+        ProjectileBody->resetForces();
+        ProjectileBody->setVelocity(Vect(0,0));
+        ProjectileBody->setAngularVelocity(0);
+        ProjectileBody->setEnable(false);
+        usedProjectiles->push_back(projectile);
     }
 }

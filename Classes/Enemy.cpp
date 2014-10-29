@@ -85,16 +85,17 @@ namespace ArcticTest
     
     void Enemy::ApplyPunishement()
     {
-        MarkedAsPoolable(this);
+        Destroy(this);
         cout << "Enemy reached the lower section of the screen" << endl;
     }
     
-    void Enemy::MarkedAsPoolable(Enemy* enemy)
+    void Enemy::Destroy(Enemy* enemy)
     {
         enemy->enemySprite->getScheduler()->unscheduleAllForTarget(enemy->enemySprite);
         enemy->enemySprite->getActionManager()->removeAllActionsFromTarget(enemy->enemySprite);
         enemy->enemySprite->getPhysicsBody()->setEnable(false);
-        enemy->isPoolable = true;
         enemy->enemySprite->setVisible(false);
+        
+        enemy->removeFromParentAndCleanup(false);
     }
 }

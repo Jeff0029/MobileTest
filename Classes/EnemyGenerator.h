@@ -50,8 +50,6 @@ namespace ArcticTest
         TextureBank* textBank;
         Layer* enemyLayer;
         
-        vector<Enemy*> allEnemies;
-
         std::map <float, Enemy::ShapeType> allShapeTypeChances;
         std::map <float, Enemy::ColorType> allColorTypeChances;
     };

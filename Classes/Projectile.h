@@ -28,16 +28,14 @@ namespace ArcticTest
         void LookAt(Vec2 target);
         void SetPos(Vec2 position);
         bool OnContactBegin(PhysicsContact &physicBodyTouched);
-        void Destroy();
         
         EventListenerPhysicsContact* collisionListner;
         Vec2 GetNormalizedDirection();
-        static void MarkAsPoolable(Projectile* projectile);
+        void MarkAsPoolable(Projectile* projectile);
         
         Sprite* projectileSprite;
         
-        // If the projectile is ready to be reused
-        bool isPoolable = false;
+        list<Projectile *> *usedProjectiles;
     };
 }
 
