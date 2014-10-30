@@ -17,7 +17,6 @@
 namespace ArcticTest
 {
     using namespace cocos2d;
-    using namespace std;
     
     class Projectile
     {
@@ -27,14 +26,19 @@ namespace ArcticTest
         
         void LookAt(Vec2 target);
         void SetPos(Vec2 position);
+        
+        // Collision detection for the projectile
         bool OnContactBegin(PhysicsContact &physicBodyTouched);
         
         EventListenerPhysicsContact* collisionListner;
+        
+        //Gets the normalized direction of the projectileSprite
         Vec2 GetNormalizedDirection();
         void MarkAsPoolable(Projectile* projectile);
         
         Sprite* projectileSprite;
         
+        // A pointer to the usedProjectiles vector in Slingshot.h
         list<Projectile *> *usedProjectiles;
     };
 }

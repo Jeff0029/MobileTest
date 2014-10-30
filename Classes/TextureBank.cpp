@@ -21,11 +21,11 @@ namespace ArcticTest
     TextureBank::~TextureBank()
     {
         
-        
     }
     
     void TextureBank::RenameRetina(string* name)
     {
+        // adds the '-hd' mark to load the retina graphics version of the textures
         if (cocos2d::Director::getInstance()->getOpenGLView()->isRetinaDisplay())
             name->insert(name->find('.'), "-hd");
     }

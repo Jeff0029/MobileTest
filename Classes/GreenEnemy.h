@@ -20,9 +20,7 @@ namespace ArcticTest
     {
         GreenEnemy();
         virtual ~GreenEnemy();
-        
-        Action* moveDown;
-        
+
     protected:
         virtual void Activate();
     public:

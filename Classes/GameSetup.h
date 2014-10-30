@@ -14,7 +14,6 @@
 #include "EnemyGenerator.h"
 #include "SlingShot.h"
 
-
 namespace ArcticTest
 {
     

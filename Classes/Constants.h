@@ -9,20 +9,14 @@
 #ifndef __ArcticTest__Constants__
 #define __ArcticTest__Constants__
 
-//PHYSICS TAGS
 extern const int ENEMY_TAG;
 extern const int BORDER_PHYSICBODY_TAG;
 
-// PHYSICS LAYERS
 extern const int ENEMY_CONTACT_LAYER;
 extern const int PROJECTILE_CONTACT_LAYER;
 extern const int BORDER_CONTACT_LAYER;
 
-//ACTIONS TAGS
 extern const int MOVE_DOWN_ACTION_TAG;
-
-
-//ENEMY
 
     // These pourcentages needs to equal 1
 extern const float TRIANGLE_TYPE_CHANCE;
@@ -34,5 +28,6 @@ extern const float ORANGE_TYPE_CHANCE;
 extern const float RED_TYPE_CHANCE;
 
 extern const float SPEEDUP_INTERVAL_TIME;
+extern const float GENERATION_RATE_INCREASE;
 
 #endif /* defined(__ArcticTest__Constants__) */

@@ -15,6 +15,8 @@ namespace ArcticTest
 	{
         Size visibleSize = Director::getInstance()->getVisibleSize();
         Vec2 origin = Director::getInstance()->getVisibleOrigin();
+        
+        // Stores string for pojectile sprite creation
         projectileTextureName = textBank->projectileTexture;
         
         // Create Sprites
@@ -28,6 +30,7 @@ namespace ArcticTest
         
         // Create layer
         auto slingLayer = SlingShot::create();
+        // Store layer
         this->slingLayer = slingLayer;
         
         // Setup slingShot Listner
@@ -38,6 +41,7 @@ namespace ArcticTest
         listner->onTouchEnded = CC_CALLBACK_2(SlingShot::onTouchedEnded, this);
         _eventDispatcher->addEventListenerWithSceneGraphPriority(listner, reticleSprite);
         
+        // add sprites to layer and adds the layer to the scene
         slingLayer->addChild(reticleSprite);
         slingLayer->addChild(slingshotSprite);
         Director::getInstance()->getRunningScene()->addChild(slingLayer);
@@ -46,7 +50,11 @@ namespace ArcticTest
 
 	SlingShot::~SlingShot()
 	{
-		// TODO Auto-generated destructor stub
+        if (projectileInSling != NULL)
+        {
+            delete projectileInSling;
+            projectileInSling = 0;
+        }
 	}
     
     void SlingShot::SetupScreenBorder(Size sizeOffset)
@@ -54,13 +62,17 @@ namespace ArcticTest
         Size visibleSize = Director::getInstance()->getVisibleSize();
         Vec2 origin = Director::getInstance()->getVisibleOrigin();
         
+        // Create size of the screen plus the offset Size param
         Size BorderSize = *new Size(visibleSize.width + (sizeOffset.width * 2), visibleSize.height + visibleSize.height);
         auto screenBorder = PhysicsBody::createEdgeBox(BorderSize);
+        
+        // Setup PhysicsBody
         screenBorder->setTag(BORDER_PHYSICBODY_TAG);
         screenBorder->setPositionOffset(Vec2(visibleSize.width/2, visibleSize.height/2));
         screenBorder->setCollisionBitmask(BORDER_CONTACT_LAYER);
         screenBorder->setContactTestBitmask(true);
         
+        // Add border to the layer
         auto borderNode = Node::create();
         borderNode->setPhysicsBody(screenBorder);
         slingLayer->addChild(borderNode);
@@ -70,21 +82,26 @@ namespace ArcticTest
     {
         if (usedProjectiles.size() == 0)
         {
+            // Creating a new projectile
             projectileInSling = new Projectile(projectileTextureName, slingLayer);
             projectileInSling->usedProjectiles = &usedProjectiles;
         }
         else
         {
+            // Taking a projectile from the pool
             projectileInSling = usedProjectiles.front();
             UnpoolProjectile(usedProjectiles.front());
         }
         
+        // Refurbrish the projectile
         projectileInSling->projectileSprite->getPhysicsBody()->resetForces();
         projectileInSling->projectileSprite->setRotation(0);
         projectileInSling->SetPos(reticleSprite->getPosition());
         
         if (!isFirstShotFired)
         {
+            // CREATED ONCE*
+            //setup the border for the projectiles to mark them as poolable
             float maxDimension = MAX(projectileInSling->projectileSprite->getContentSize().height, projectileInSling->projectileSprite->getContentSize().width);
             SetupScreenBorder(Size(maxDimension, maxDimension));
             isFirstShotFired = true;
@@ -99,6 +116,7 @@ namespace ArcticTest
         projectileInSling->SetPos(reticleSprite->getPosition());
         projectileInSling->LookAt(reticleRestingPos);
         
+        // This prevent the player from going too high on the screen and moving the finger with the Sling doing nothing
         if (initialTouch.y < touch->getLocation().y)
             initialTouch.y = touch->getLocation().y;
         
@@ -115,9 +133,11 @@ namespace ArcticTest
     
     void SlingShot::onTouchedEnded(Touch* touch, Event* event)
     {
+        // get a number between 0 & 1 to apply to the final force
         float stretchAmount = reticleRestingPos.distance(reticleSprite->getPosition()) / reticleMovementRadius;
         ReleaseProjectile(slingshotForce * stretchAmount, projectileInSling->GetNormalizedDirection());
         
+        // Reset the reticle's position
         float distance = reticleSprite->getPosition().distance(reticleRestingPos);
         auto moveToRestingLocation = MoveTo::create(reticleMovingSpeed / distance, reticleRestingPos);
         reticleSprite->runAction(moveToRestingLocation);
@@ -125,6 +145,7 @@ namespace ArcticTest
     
     void SlingShot::ReleaseProjectile(float force, Vec2 direction)
     {
+        // Release Projectile
         PhysicsBody* ProjectileBody = projectileInSling->projectileSprite->getPhysicsBody();
         ProjectileBody->setEnable(true);
         ProjectileBody->applyImpulse(Vect(direction.x * force, direction.y * force));
@@ -132,6 +153,7 @@ namespace ArcticTest
     
     void SlingShot::UnpoolProjectile(Projectile* projectile)
     {
+        // take a used projectile from the pool
         projectile->projectileSprite->setVisible(true);
         usedProjectiles.remove(projectile);
     }

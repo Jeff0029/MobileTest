@@ -22,7 +22,6 @@
 
 namespace ArcticTest
 {
-    //using namespace std;
     using namespace cocos2d;
     
     class EnemyGenerator : cocos2d::Layer
@@ -38,18 +37,18 @@ namespace ArcticTest
     private:
         void GenerateEnemy();
         float GetEnumKey(vector<float> keys, float ranNum);
-
         
         template<typename T>
         vector<float> KeysInVector(map<float, T> map );
         static float randomPourcentageGenerator();
         
+        // time it takes to spawn the next enemy
         float generationRate = 15;
-        float generationRateIncrease = 0.1f;
         
         TextureBank* textBank;
         Layer* enemyLayer;
         
+        // pourcentages paired with enums that determine how each Shape/Color type is likely to be picked
         std::map <float, Enemy::ShapeType> allShapeTypeChances;
         std::map <float, Enemy::ColorType> allColorTypeChances;
     };

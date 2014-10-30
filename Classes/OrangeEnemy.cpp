@@ -17,7 +17,7 @@ namespace ArcticTest
     
     OrangeEnemy::~OrangeEnemy()
     {
-        cout << "Orange Enemy Destroyed" << endl;
+
     }
     
     OrangeEnemy* OrangeEnemy::Create()
@@ -28,10 +28,12 @@ namespace ArcticTest
     void OrangeEnemy::Activate()
     {
         float finalPos = screenSize.height;
+        
+        // Create both directions
         MoveDownRight  = MoveBy::create(timeToTravelScreenHeight, Vec2(finalPos, -finalPos));
         MoveDownLeft  = MoveBy::create(timeToTravelScreenHeight, Vec2(-finalPos, -finalPos));
         
-        
+        // Setup
         MoveDownLeft->setTag(MOVE_DOWN_ACTION_TAG);
         MoveDownLeft->retain();
         MoveDownLeft->setTarget(enemySprite);
@@ -40,29 +42,35 @@ namespace ArcticTest
         MoveDownRight->retain();
         MoveDownRight->setTarget(enemySprite);
         
+        // Randomly pick between left or right direction to start
         if (rand() & 1)
             enemySprite->runAction(MoveDownRight);
         else
             enemySprite->runAction(MoveDownLeft);
         
-        // Check when it touches the screen
         Director::getInstance()->getScheduler()->schedule(schedule_selector(OrangeEnemy::update), this, 0, false);
     }
     
     void OrangeEnemy::update(float dt)
     {
+        CCASSERT(enemySprite->getActionManager() != NULL, "Action manager needs to be non-NULL to get the actions");
+        
+        
         if (enemySprite->getPosition().x > screenSize.width - enemySprite->getContentSize().width/2 && enemySprite->getActionByTag(MOVE_DOWN_ACTION_TAG) == MoveDownRight)
         {
+            // Check if we are moving right and touching the right screen border
             // TODO: use stopaction with proper cleanup
             enemySprite->stopAllActions();
             enemySprite->runAction(MoveDownLeft);
         }
         else if (enemySprite->getPosition().x < enemySprite->getContentSize().width/2 && enemySprite->getActionByTag(MOVE_DOWN_ACTION_TAG) == MoveDownLeft)
         {
+            // Check if we are moving left and touching the left screen border
             // TODO: use stopaction with proper cleanup
             enemySprite->stopAllActions();
             enemySprite->runAction(MoveDownRight);
         }
+        
         if (enemySprite->getPosition().y < enemySprite->getContentSize().height/2)
         {
             // If we reached the lower area

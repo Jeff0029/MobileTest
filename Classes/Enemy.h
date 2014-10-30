@@ -19,6 +19,7 @@
 namespace ArcticTest
 {
     using namespace cocos2d;
+    
     class Enemy : public cocos2d::Node
     {
     public:
@@ -40,9 +41,8 @@ namespace ArcticTest
         virtual ~Enemy();
         
         virtual void Activate();
-        virtual void onExit();
         void SetStartingPos(Sprite* sprite);
-        static float RandomScreenWidthPosition(float spriteWidth);
+        static float RandomScreenWidthPosition(float spriteWidth, float screenWidth);
         void SetupEnemySpriteRect(Enemy* enemy);
         void SetupCollisionShape(Enemy* enemy);
         void ApplyPunishement();

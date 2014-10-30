@@ -13,12 +13,11 @@ namespace ArcticTest
     GreenEnemy::GreenEnemy()
     {
         
-        
     }
     
     GreenEnemy::~GreenEnemy()
     {
-        cout << "Green Enemy Destroyed" << endl;
+        
     }
     
     GreenEnemy* GreenEnemy::Create()
@@ -30,8 +29,8 @@ namespace ArcticTest
     {
         float finalPos = Director::getInstance()->getVisibleSize().height;
         auto moveDown = MoveBy::create(timeToTravelScreenHeight, Vec2(0, -finalPos));
-        this->moveDown = moveDown;
         
+        // Apply the CallFunc if the action was able to finish
         CallFunc *callPunishement = CallFunc::create(CC_CALLBACK_0(Enemy::ApplyPunishement, this));
         enemySprite->runAction(Sequence::create(moveDown, callPunishement, NULL));
     }

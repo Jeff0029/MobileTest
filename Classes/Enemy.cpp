@@ -17,16 +17,11 @@ namespace ArcticTest
     
     Enemy::~Enemy()
     {
-        cout << "Enemy destroyed!! " << endl;
+
     }
     
     void Enemy::Activate()
     {}
-    
-    void Enemy::onExit()
-    {
-        
-    }
     
     void Enemy::SetStartingPos(Sprite* sprite)
     {
@@ -34,24 +29,23 @@ namespace ArcticTest
         Vec2 origin = Director::getInstance()->getVisibleOrigin();
         Size spriteSize = sprite->getContentSize();
         
-        sprite->setPosition(Vec2(RandomScreenWidthPosition(spriteSize.width) + origin.x, visibleSize.height + spriteSize.height/2));
+        // Put the sprite above the screen with a random X coordinate that
+        sprite->setPosition(Vec2(RandomScreenWidthPosition(spriteSize.width, visibleSize.width) + origin.x, visibleSize.height + spriteSize.height/2));
     }
     
-    float Enemy::RandomScreenWidthPosition(float spriteWidth)
+    float Enemy::RandomScreenWidthPosition(float spriteWidth, float screenWidth)
     {
-        // Smallest Possible number = sprite.getContentSize().width/2
-        // Largest Possible number = screen Width - sprite.getContentSize().width/2
-        float screenWidth = Director::getInstance()->getVisibleSize().width;
-        
         return (rand()%static_cast<int>(screenWidth - spriteWidth)) + spriteWidth/2;
     }
     
     void Enemy::SetupEnemySpriteRect(Enemy* enemy)
     {
+        // Using the order of the enum as they appear on the spritesheat
         int col = enemy->color;
         int shape = enemy->shape;
         int offset = col + shape * numOfDifColors;
-        
+
+        // Rect splicing the horizontal set the spritesheat to only include one enemy Texture
         enemy->enemySprite->setTextureRect(Rect(enemy->enemySprite->getContentSize().width / enemySpriteAmount * offset,
                                                 0,
                                                 enemy->enemySprite->getContentSize().width / enemySpriteAmount,
@@ -63,6 +57,7 @@ namespace ArcticTest
         PhysicsBody* physicsBody;
         if (enemy->shape == circle)
         {
+            // Circle
             physicsBody = PhysicsBody::createCircle(enemySprite->getContentSize().height/2, PhysicsMaterial(0,1,0));
             enemySprite->setPhysicsBody(physicsBody);
         }
@@ -76,7 +71,7 @@ namespace ArcticTest
             enemySprite->setPhysicsBody(physicsBody);
         }
         
-        CCASSERT(physicsBody != NULL, "Create \'physicsbody\' before continuing");
+        CCASSERT(physicsBody != NULL, "Create physicsbody before continuing");
         physicsBody->setCollisionBitmask(ENEMY_CONTACT_LAYER);
         physicsBody->setContactTestBitmask(true);
         physicsBody->setDynamic(false);
@@ -86,16 +81,17 @@ namespace ArcticTest
     void Enemy::ApplyPunishement()
     {
         Destroy(this);
-        cout << "Enemy reached the lower section of the screen" << endl;
     }
     
     void Enemy::Destroy(Enemy* enemy)
     {
+        // Cleanup the moving action of the enemy before Cleanup
         enemy->enemySprite->getScheduler()->unscheduleAllForTarget(enemy->enemySprite);
         enemy->enemySprite->getActionManager()->removeAllActionsFromTarget(enemy->enemySprite);
         enemy->enemySprite->getPhysicsBody()->setEnable(false);
         enemy->enemySprite->setVisible(false);
         
-        enemy->removeFromParentAndCleanup(false);
+        enemy->enemySprite->removeAllChildrenWithCleanup(true);
+        enemy->removeFromParentAndCleanup(true);
     }
 }

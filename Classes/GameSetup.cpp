@@ -13,12 +13,11 @@ namespace ArcticTest
 
     GameSetup::GameSetup()
     {
-        
+        // Stores all the texture's name
         textureBank = new TextureBank();
         
         // Create all initial Game assets to start the game
         enemyGen = new EnemyGenerator(textureBank);
-        
         slingshot = new SlingShot(textureBank);
         
     }

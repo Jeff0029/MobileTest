@@ -14,14 +14,19 @@ namespace ArcticTest
     {
         projectileSprite = Sprite::create(projectileName);
         
+        // Physicsbody of the projectile
         auto projectilePhysic = PhysicsBody::createBox(projectileSprite->getContentSize());
+        
+        // Projectile spawns in the sling and are not active until shot
         projectilePhysic->setEnable(false);
         projectilePhysic->setCollisionBitmask(PROJECTILE_CONTACT_LAYER);
         projectilePhysic->setContactTestBitmask(true);
         
+        // Contact Listener for when it collides with enemies or the screen border
         collisionListner = EventListenerPhysicsContact::create();
         collisionListner->onContactBegin = CC_CALLBACK_1(Projectile::OnContactBegin, this);
         
+        // Used for storing the projectiles in the pool instead of the sprite (who has the physicsbody)
         projectileSprite->setUserData(this);
         projectileSprite->setPhysicsBody(projectilePhysic);
         projectileSprite->getEventDispatcher()->addEventListenerWithFixedPriority(collisionListner, 1);
@@ -40,7 +45,10 @@ namespace ArcticTest
         Vec2 deltaProjectileTarget = target - projectileSprite->getPosition();
         deltaProjectileTarget.normalize();
         
+        // Finds the angle between the two Vec2
         float angle = ccpAngle(up, deltaProjectileTarget);
+        
+        //Rad to Deg
         angle *= (180/3.14);
         
         projectileSprite->setRotation(-angle);
@@ -75,11 +83,12 @@ namespace ArcticTest
                 projectile = static_cast<Projectile *>(a->getBody()->getNode()->getUserData());
             }
             
+            // De-activate both objects
             MarkAsPoolable(projectile);
             Enemy::Destroy(enemy);
             
         }
-        // If we collide with a wall
+        // If any shape is a wall
         else if ((a->getBody()->getTag() == BORDER_PHYSICBODY_TAG) || (b->getBody()->getTag() == BORDER_PHYSICBODY_TAG))
         {
             Projectile *projectile;
@@ -90,6 +99,7 @@ namespace ArcticTest
                 //a is the projectile
                 projectile = static_cast<Projectile *>(a->getBody()->getNode()->getUserData());
 
+            // Projectile is out of bound and should be pooled
             MarkAsPoolable(projectile);
         }
             
@@ -107,13 +117,17 @@ namespace ArcticTest
     
     void Projectile::MarkAsPoolable(Projectile* projectile)
     {
+        // Hide projectile
         projectile->projectileSprite->setVisible(false);
         
+        // Since the projectile is a dynamic physicsObject we need to reset all the forces applied on the body
         PhysicsBody* ProjectileBody = projectile->projectileSprite->getPhysicsBody();
         ProjectileBody->resetForces();
         ProjectileBody->setVelocity(Vect(0,0));
         ProjectileBody->setAngularVelocity(0);
         ProjectileBody->setEnable(false);
+        
+        //Maked as re-usable again
         usedProjectiles->push_back(projectile);
     }
 }

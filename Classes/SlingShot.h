@@ -23,15 +23,21 @@ namespace ArcticTest
     public:
         SlingShot(TextureBank* textBank);
         virtual ~SlingShot();
+        
+        // Setup the physicsbody that delemit the projectile's environment
         void SetupScreenBorder(Size sizeOffset);
         
     private:
         
+        // Simple touch event with the whole screen to trigger
         bool onTouchedStarted(Touch * touch, Event * event);
         void onTouchedMoved(Touch * touch, Event * event);
         void onTouchedEnded(Touch * touch, Event * event);
         
+        // Activate the projectile and give it an impulse
         void ReleaseProjectile(float force, Vec2 direction);
+        
+        // fetch a reusable projectile
         void UnpoolProjectile(Projectile* projectile);
         
         Layer* slingLayer;
@@ -39,9 +45,12 @@ namespace ArcticTest
         Sprite* slingshotSprite;
         Sprite* reticleSprite;
         
+        // First touch when onTouchedStarted is called
         Vec2 initialTouch = Vec2::ZERO;
         
+        // Location where the reticle is when no touch is detected
         Vec2 reticleRestingPos = Vec2::ZERO;
+        
         // radius where the reticle can move (in pixels)
         float reticleMovementRadius = 150;
         
@@ -52,9 +61,13 @@ namespace ArcticTest
         float slingshotForce = 160000;
         
         bool isFirstShotFired = false;
+        
+        // Stored name of the texture to apply to the sprites
         string projectileTextureName;
         
         Projectile* projectileInSling;
+        
+        // List of projectiles that have been used and are not currently active
         list<Projectile *> usedProjectiles;
     };
 
